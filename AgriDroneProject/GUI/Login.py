@@ -1,6 +1,7 @@
 import subprocess
 import tkinter as tk
 import time
+import webbrowser
 from tkinter import messagebox
 import bcrypt
 from PIL import Image, ImageTk
@@ -33,11 +34,13 @@ valid_credentials = {
     "farmer": {"username": "farmer", "password": bcrypt.hashpw("@1234@".encode('utf-8'), bcrypt.gensalt())}
 }
 
+register_html = "index.html"
 # Create a label to display the background image
 background_label = tk.Label(root, image=background_photo)
 background_label.place(relwidth=1, relheight=1)
 
-
+def open_registration():
+    webbrowser.open(register_html)
 # Function to validate credentials
 def validate_credentials(username, password):
     user_role = None
@@ -81,7 +84,11 @@ entry_password.pack(pady=5, padx=20)
 
 # Improve button styling
 login_button = tk.Button(root, text="Login", command=login, bg=BUTTON_COLOR, font=FONT_STYLE, fg=TEXT_COLOR)
-login_button.pack(pady=20, padx=20)
+login_button.pack(side=tk.RIGHT, padx=5)
+
+open_registration_button = tk.Button(root, text='SignUp', command=open_registration, bg=BUTTON_COLOR, font=FONT_STYLE, fg=TEXT_COLOR)
+open_registration_button.pack(side=tk.LEFT, padx=5)
+
 root.mainloop()
 # def login():
 #     username = entry_username.get()
