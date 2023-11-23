@@ -31,7 +31,7 @@ Please Note:
 - Use the application responsibly and follow ethical guidelines.
 """
 # Set the window size to fullscreen
-root.geometry("720x400")
+root.geometry("1100x400")
 root.config(bg=BG_COLOR)
 
 # Create a connection to the database
@@ -192,17 +192,24 @@ weather_button = tk.Button(root, image=photo2, text="Check Weather Forecast", co
                            background="#90EE90",
                            font=FONT_STYLE)
 weather_button.pack(side=tk.LEFT, pady=5, padx=20)
+weather_label = tk.Label(root, text="Get Weather Forecast", font=FONT_STYLE)
+weather_label.pack(side=tk.LEFT)
 
 data_button = tk.Button(root, image=photo1, text="Data Insights", command=open_powerbi, background="#90EE90",
                         font=FONT_STYLE)
 data_button.pack(side=tk.LEFT, pady=5, padx=20)
+data_label = tk.Label(root, text="Explore Data Insights", font=FONT_STYLE)
+data_label.pack(side=tk.LEFT)
 
 crop_assessment_button = tk.Button(root, image=photo, text="Start Drone", command=close_application, state="disabled",
                                    background=BUTTON_COLOR, font=FONT_STYLE)
 crop_assessment_button.pack(side=tk.LEFT, pady=5, padx=20)
-copyright_label = tk.Label(root, text="Copyright Reserved @ Agri~Drone 2023", bg=BG_COLOR,
-                           font=("Times New Roman", 12, "bold italic"))
-copyright_label.pack(side=tk.BOTTOM)
+crop_assessment_label = tk.Label(root, text="Initiate Crop Assessment", font=FONT_STYLE)
+crop_assessment_label.pack(side=tk.LEFT)
+
+# copyright_label = tk.Label(root, text="Copyright Reserved @ Agri~Drone 2023", bg=BG_COLOR,
+#                            font=("Times New Roman", 12, "bold italic"))
+# copyright_label.pack(side=tk.BOTTOM)
 
 # Start the GUI main loop
 update_date_time()
