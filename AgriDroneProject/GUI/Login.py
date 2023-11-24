@@ -17,7 +17,7 @@ TEXT_COLOR = "#000000"
 FONT_STYLE = ("Arial ", 16)
 
 # Load the background image
-background_image = Image.open("OIP.jpg")
+background_image = Image.open("C:/Users/mthog/OneDrive/Desktop/PRJ371-Project/AgriDroneProject/GUI/OIP.jpg")
 background_photo = ImageTk.PhotoImage(background_image)
 
 # Set the window size to match the background image size
@@ -26,7 +26,7 @@ root.geometry(f"{background_image.width}x{background_image.height}")
 
 # Function to open the Application.py
 def open_application():
-    subprocess.Popen(["python", "Application.py"])
+    subprocess.Popen(["python", "C:/Users/mthog/OneDrive/Desktop/PRJ371-Project/AgriDroneProject/GUI/Application.py"])
 
 
 valid_credentials = {
@@ -34,7 +34,7 @@ valid_credentials = {
     "farmer": {"username": "farmer", "password": bcrypt.hashpw("@1234@".encode('utf-8'), bcrypt.gensalt())}
 }
 
-register_html = "index.html"
+register_html = "C:/Users/mthog/OneDrive/Desktop/PRJ371-Project/AgriDroneProject/GUI/index.html"
 # Create a label to display the background image
 background_label = tk.Label(root, image=background_photo)
 background_label.place(relwidth=1, relheight=1)

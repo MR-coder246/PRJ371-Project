@@ -19,11 +19,11 @@ FONT_STYLE = ("Arial ", 16)
 
 # Replace with your own Power BI report URL and embed token
 report_url = "https://app.powerbi.com/groups/me/reports/5d657c9d-0c5f-45d1-866c-f5fcfa233402/ReportSection?experience=power-bi"
-ico_image1 = Image.open("drone_icon_191447.ico")
+ico_image1 = Image.open("C:/Users/mthog/OneDrive/Desktop/PRJ371-Project/AgriDroneProject/GUI/drone_icon_191447.ico")
 photo = ImageTk.PhotoImage(ico_image1)
-ico_image2 = Image.open("data_icon_154537.ico")
+ico_image2 = Image.open("C:/Users/mthog/OneDrive/Desktop/PRJ371-Project/AgriDroneProject/GUI/data_icon_154537.ico")
 photo1 = ImageTk.PhotoImage(ico_image2)
-ico_image3 = Image.open("Weather_31085.ico")
+ico_image3 = Image.open("C:/Users/mthog/OneDrive/Desktop/PRJ371-Project/AgriDroneProject/GUI/Weather_31085.ico")
 photo2 = ImageTk.PhotoImage(ico_image3)
 warning_message = """
 Please Note:

@@ -60,14 +60,14 @@ def drone_control_thread():
         drone.send_rc_control(0, 0, 0, 0)
 
 
-# Function to update video until connection is established
+#
 # def update_video_thread():
 #     while True:
 #         if ndvi_mode:
 #             start_ndvi_stream()
 #         else:
 #             update_video()
-#         time.sleep(0.1)
+#         time.sleep(0)
 
 
 # Function to receive and process NDVI map image
@@ -181,53 +181,6 @@ video_label = tk.Label(root)
 video_label.pack()
 
 
-# Function to update video until connection is established
-def update_video():
-    global ndvi_mode
-    ndvi_mode = False
-    frame = drone.get_frame_read().frame
-
-    # Process the frame using your custom processing function
-    processed_frame = process_frame(frame)
-    out = cv2.VideoWriter('output_video.avi', fourcc, 20.0, (frame.shape[1], frame.shape[0]))
-
-    processed_frame = cv2.resize(processed_frame, (1250, 550))
-
-    img = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
-    img = Image.fromarray(img)
-    img = ImageTk.PhotoImage(image=img)
-    out.write(processed_frame)
-    # Update the label with the new frame
-    video_label.img = img
-    video_label.config(image=img)
-
-    # Schedule the function to run again after a delay (e.g., 30 milliseconds)
-    root.after(30, update_video)
-    out.release()
-
-
-def capture_and_save_image():
-    try:
-        # Capture a frame from the drone's camera
-        frame = drone.get_frame_read().frame
-
-        # Generate a unique filename for the captured image (you may use timestamps or other methods)
-        image_filename = f"captured_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.jpg"
-
-        # Save the captured image to the specified directory
-        image_path = os.path.join(captured_images_directory, image_filename)
-        cv2.imwrite(image_path, frame)
-
-        # Insert image information into the database
-        cursor.execute("INSERT INTO images (image_type, image_path) VALUES (?, ?)", ("captured_image", image_path))
-        conn.commit()
-
-        print(f"Image captured and saved as {image_filename}")
-    except Exception as e:
-        print(f"Error capturing and saving image: {e}")
-        tk.messagebox.showerror("Error", f"Error capturing and saving image: {e}")
-
-
 def identify_pests_or_diseases(image):
     green_channel = image[:, :, 1]  # Assuming green is the 2nd channel in the image
     threshold = 100  # Adjust this threshold as needed
@@ -242,32 +195,7 @@ def update_video_thread():
     root.after(100, update_video_thread)
 
 
-# Function to start NDVI stream
-def start_ndvi_stream():
-    global ndvi_mode
-    ndvi_mode = True
-
-    # Function to update video with NDVI frames
-    def update_ndvi_video():
-        if ndvi_mode:
-            frame = drone.get_frame_read().frame
-            processed_frame = process_frame(frame)
-
-            # Calculate and visualize NDVI
-            ndvi_image = calculate_and_visualize_ndvi(processed_frame)
-
-            # Update the label with the new NDVI image
-            video_label.img = ndvi_image
-            video_label.config(image=ndvi_image)
-            root.after(60, update_ndvi_video)
-
-    ndvi_thread = threading.Thread(target=update_ndvi_video)
-    ndvi_thread.start()
-
-    # Start updating the video with NDVI frames
-    update_ndvi_video()
-
-#
+# # Function to start NDVI stream
 # def start_ndvi_stream():
 #     global ndvi_mode
 #     ndvi_mode = True
@@ -288,9 +216,34 @@ def start_ndvi_stream():
 #
 #     ndvi_thread = threading.Thread(target=update_ndvi_video)
 #     ndvi_thread.start()
+#
 #     # Start updating the video with NDVI frames
 #     update_ndvi_video()
-#
+
+
+def start_ndvi_stream():
+    global ndvi_mode
+    ndvi_mode = True
+
+    # Function to update video with NDVI frames
+    def update_ndvi_video():
+        if ndvi_mode:
+            frame = drone.get_frame_read().frame
+            processed_frame = process_frame(frame)
+
+            # Calculate and visualize NDVI
+            ndvi_image = calculate_and_visualize_ndvi(processed_frame)
+
+            # Update the label with the new NDVI image
+            video_label.img = ndvi_image
+            video_label.config(image=ndvi_image)
+            root.after(60, update_ndvi_video)
+
+    ndvi_thread = threading.Thread(target=update_ndvi_video)
+    ndvi_thread.start()
+    # Start updating the video with NDVI frames
+    update_ndvi_video()
+
 
 def get_soil_type(color):
     soil_colors = {
@@ -474,14 +427,6 @@ def check_battery():
         drone.land()
         time.sleep(2)
 
-
-# Check battery level every
-def check_battery_periodically():
-    while True:
-        check_battery()
-        time.sleep(2)
-
-
 # Function to calculate crop area
 def calculate_crop_area(image):
     # Implement logic to calculate crop area based on image processing
@@ -494,7 +439,61 @@ def calculate_crop_area(image):
         total_area += cv2.contourArea(contour)
 
     return total_area
+# Function to update video
+def update_video():
+    frame = drone.get_frame_read().frame
+    processed_frame = process_frame(frame)
 
+    processed_frame = cv2.resize(processed_frame, (550, 550))
+
+    img = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(img)
+    img = ImageTk.PhotoImage(image=img)
+
+    video_label.img = img
+    video_label.config(image=img)
+
+    root.after(30, update_video)
+
+# Function to update NDVI video
+def update_ndvi_video():
+    if ndvi_mode:
+        frame = drone.get_frame_read().frame
+        processed_frame = process_frame(frame)
+
+        # Calculate and visualize NDVI
+        ndvi_image = calculate_and_visualize_ndvi(processed_frame)
+
+        # Update the label with the new NDVI image
+        video_label.img = ndvi_image
+        video_label.config(image=ndvi_image)
+
+        root.after(60, update_ndvi_video)
+
+# Function to capture and save an image
+def capture_and_save_image():
+    frame = drone.get_frame_read().frame
+
+    # Generate a unique filename for the captured image
+    image_filename = f"captured_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.jpg"
+
+    # Save the captured image to the specified directory
+    image_path = os.path.join(captured_images_directory, image_filename)
+    cv2.imwrite(image_path, frame)
+
+    # Insert image information into the database
+    cursor.execute("INSERT INTO images (image_type, image_path) VALUES (?, ?)", ("captured_image", image_path))
+    conn.commit()
+
+    print(f"Image captured and saved as {image_filename}")
+
+    # Schedule the function to run again after a delay
+    root.after(5000, capture_and_save_image)  # Capture an image every 5 seconds
+
+# Function to check battery periodically
+def check_battery_periodically():
+    check_battery()
+    root.after(2000, check_battery_periodically)
 
 def process_analyze_report():
     try:
@@ -569,5 +568,6 @@ battery_thread = threading.Thread(target=check_battery_periodically)
 video_thread.start()
 drone_thread.start()
 battery_thread.start()
+
 # Start the tkinter main loop (window will open here)
 root.mainloop()
